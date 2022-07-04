@@ -41,7 +41,6 @@ export default function App() {
     SetModalisVisible(false);
   }
   
-  
   //TextInput can use onChangeText props 
   return (
     // Text has to be use to implement text in Reactnative in <View>
@@ -142,4 +141,10 @@ const styles = StyleSheet.create({
 
 /*
           Using Status Bar to control the Status Bar in mobile phone
-*/ 
+*/
+
+/* 
+When debugging the ReactNative App, remmeber to look in terminal and Warning and Error in the App, or we can console.log to look inside the app
+
+Press M to pen dev menu and press remote debugging
+*/
