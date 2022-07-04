@@ -1,10 +1,18 @@
 import { useState } from 'react';
-import { StyleSheet, Text, TextInput, View, Button, ScrollView, FlatList } from 'react-native';
+import { StyleSheet, Text, View, ScrollView, FlatList, Button } from 'react-native';
+import { StatusBar } from 'expo-status-bar';
+
 import GoalInput from './components/GoalInput';
 import GoalItem from './components/GoalItem';
-// Just delete the {StatusBar} which is import from 'expo-status-bar'
-export default function App() {
 
+// Just delete the {StatusBar} which is import from 'expo-status-bar'
+
+export default function App() {
+  const [ModalisVisible, SetModalisVisible] = useState(false);
+
+  function StartAddgoalHandler() {
+    SetModalisVisible(true);
+  }
   const [Input, SetInput] = useState('');
 
   const [CourseGoal,SetCourseGoal] = useState([]);
@@ -21,6 +29,19 @@ export default function App() {
     SetCourseGoal((prevCoureGoal) => [...prevCoureGoal, IdInput]);
   }
 
+// function on press
+//function in filter: True and False
+  function DeleteGoalHandler(id) {
+    SetCourseGoal(CurrentCourse => {
+      return CurrentCourse.filter((goal) => goal.id !== id)
+    })
+  }
+
+  function CancelHL() {
+    SetModalisVisible(false);
+  }
+  
+  
   //TextInput can use onChangeText props 
   return (
     // Text has to be use to implement text in Reactnative in <View>
@@ -38,14 +59,24 @@ export default function App() {
     
     //Neu co () trong prop o function thi se thuc hien ngay lap tuc
 
-    // Button has no style  
+    // Button has no style
     // Button in Reactnative has onPress
+
+    // use Dynamic and if ModalisVisible is true then render the GoalInput hoac truen mot parameter visible
+    <>
+    <StatusBar style='dark'/>
     <View style={styles.appContainer}>
-      <GoalInput HandleInput={goalInputHandler} addGoal={addGoalHandler} />
+      <Button
+        title="Add New Goal"
+        color="#9dd5ef"
+        onPress={StartAddgoalHandler}
+      />
+      <GoalInput Cancel={CancelHL} show={ModalisVisible} HandleInput={goalInputHandler} addGoal={addGoalHandler} />
       <View style={styles.goalContainer}>
         <FlatList data={CourseGoal}
           renderItem={itemData => {
-            return <GoalItem check={itemData.item} />
+            return <GoalItem check={itemData.item}
+              Delete={DeleteGoalHandler} />
           }}
           keyExtractor={(item, index) => {
             return item.id;
@@ -56,7 +87,7 @@ export default function App() {
       
       </View>
     </View>
-
+    </>
     //StattusBar was delete ( in View )
   );
 }
@@ -66,9 +97,7 @@ const styles = StyleSheet.create({
   appContainer: {
     flex:1,
     paddingTop: 50,
-    paddingHorizontal: 16,
-    backgroundColor: '#e9f0f6',
-    
+    paddingHorizontal: 16,  
   },
   goalContainer: {
     flex: 5,
@@ -76,6 +105,8 @@ const styles = StyleSheet.create({
   },
   
 });
+
+// can change color in app.json, using command backgroundColor: "mau may muon"
 /*
   - Layouts is typically created with Flexbox
     similar to CSS browser flexbox
@@ -108,3 +139,7 @@ const styles = StyleSheet.create({
 /*
   The FlatList is used when they have lot of thing to list like thousand or something like that...
 */
+
+/*
+          Using Status Bar to control the Status Bar in mobile phone
+*/ 
