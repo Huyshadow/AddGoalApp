@@ -1,6 +1,27 @@
-import { StyleSheet, Text,TextInput, View, Button } from 'react-native';
+import { useState } from 'react';
+import { StyleSheet, Text, TextInput, View, Button, ScrollView, FlatList } from 'react-native';
+import GoalInput from './components/GoalInput';
+import GoalItem from './components/GoalItem';
 // Just delete the {StatusBar} which is import from 'expo-status-bar'
 export default function App() {
+
+  const [Input, SetInput] = useState('');
+
+  const [CourseGoal,SetCourseGoal] = useState([]);
+
+  function goalInputHandler(enteredText) {
+    SetInput(enteredText);
+  };
+// When updatinng ,use function.
+  function addGoalHandler() {
+    const IdInput = {
+      id: Math.random(),
+      text: Input,
+    }
+    SetCourseGoal((prevCoureGoal) => [...prevCoureGoal, IdInput]);
+  }
+
+  //TextInput can use onChangeText props 
   return (
     // Text has to be use to implement text in Reactnative in <View>
     // View like div in Html: box and container, could hold textinput, button. but can't display text
@@ -14,48 +35,46 @@ export default function App() {
     * style Stylesheet: below
     */
     //TextInput is self-closing component
-
-
     
+    //Neu co () trong prop o function thi se thuc hien ngay lap tuc
+
+    // Button has no style  
+    // Button in Reactnative has onPress
     <View style={styles.appContainer}>
-      <View style={styles.inputContainer}>
-        <TextInput placeholder='Your Course Goal' style={styles.textInput} />
-        <Button title='Add Goal'/>
-      </View>
-      <View>
-        <Text>List Of Goals...</Text>
+      <GoalInput HandleInput={goalInputHandler} addGoal={addGoalHandler} />
+      <View style={styles.goalContainer}>
+        <FlatList data={CourseGoal}
+          renderItem={itemData => {
+            return <GoalItem check={itemData.item} />
+          }}
+          keyExtractor={(item, index) => {
+            return item.id;
+          }}
+          alwaysBounceVertical={false}>
+
+        </FlatList>
+      
       </View>
     </View>
+
     //StattusBar was delete ( in View )
   );
 }
 // StyleSheet like a container, and in this container, can define an object to style
 // Beside auto-completion, the StyleSheet oject also provide validation. 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  dummyText: {
-    margin: 16,borderWidth: 2, borderColor:'blue', padding: 16,
-  },
   appContainer: {
-    padding: 50,
+    flex:1,
+    paddingTop: 50,
+    paddingHorizontal: 16,
+    backgroundColor: '#e9f0f6',
     
   },
-  inputContainer: {
-    flexDirection: 'row',
-    justifyContent: "space-between",
+  goalContainer: {
+    flex: 5,
+    flexDirection: 'column',
   },
-  textInput: {
-    borderWidth: 1,
-    borderColor: '#cccccc',
-    width: '80%',
-    marginRight: 8,
-    padding: 8,
-  },
+  
 });
 /*
   - Layouts is typically created with Flexbox
@@ -69,3 +88,23 @@ const styles = StyleSheet.create({
     + alignItem:
 */
 
+/*
+  The different between 2 platform Android and Ios: some component do not support for both platform like Text, so we can use <View> instead
+  In React Native, we don't have style inheritence
+*/
+
+/*
+  Use ScrollView to Scroll the ReactNative.
+  <ScrollView alwaysBounceVertical={false}>
+          {CourseGoal.map(goal => {
+            return <View key={goal.id} style={styles.goalItem}>
+                <Text style={styles.goalText}>{goal.text}</Text>
+            </View>
+          })}
+  </ScrollView>
+
+*/
+
+/*
+  The FlatList is used when they have lot of thing to list like thousand or something like that...
+*/
